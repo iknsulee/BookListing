@@ -8,8 +8,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final String GOOGLE_BOOKS_API = "https://www.googleapis.com/books/v1/volumes";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,10 +41,12 @@ public class MainActivity extends AppCompatActivity {
 
     public void search(View view) {
         TextView keywordTextView = (TextView) findViewById(R.id.keyword);
-        CharSequence text = keywordTextView.getText();
+        CharSequence keyword = keywordTextView.getText();
 
-        search(String.valueOf(text));
+        List<Book> books = QueryUtils.fetchBookData(GOOGLE_BOOKS_API + "?q=" + keyword + "&maxResults=10");
 
-        Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
+        search(String.valueOf(keyword));
+
+        Toast.makeText(MainActivity.this, keyword, Toast.LENGTH_SHORT).show();
     }
 }
