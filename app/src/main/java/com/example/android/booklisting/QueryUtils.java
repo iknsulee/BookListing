@@ -1,21 +1,5 @@
-/*
- * Copyright (C) 2016 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.example.android.booklisting;
 
-import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -52,7 +36,7 @@ public final class QueryUtils {
     }
 
     /**
-     * Query the USGS dataset and return a list of {@link Book} objects.
+     * Query the Google Books dataset and return a list of {@link Book} objects.
      */
     public static List<Book> fetchBookData(String requestUrl) {
         // Create URL object
@@ -115,7 +99,7 @@ public final class QueryUtils {
                 Log.e(LOG_TAG, "Error response code: " + urlConnection.getResponseCode());
             }
         } catch (IOException e) {
-            Log.e(LOG_TAG, "Problem retrieving the earthquake JSON results.", e);
+            Log.e(LOG_TAG, "Problem retrieving the book JSON results.", e);
         } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
@@ -176,12 +160,12 @@ public final class QueryUtils {
             // For each Book in the itemArray, create an {@link Book} object
             for (int i = 0; i < itemArray.length(); i++) {
 
-                // Get a single earthquake at position i within the list of books
+                // Get a single book at position i within the list of books
                 JSONObject currentBook = itemArray.getJSONObject(i);
 
-                // For a given earthquake, extract the JSONObject associated with the
+                // For a given book, extract the JSONObject associated with the
                 // key called "volumeInfo", which represents a list of all volumeInfo
-                // for that earthquake.
+                // for that book.
                 JSONObject volumeInfo = currentBook.getJSONObject("volumeInfo");
 
                 // Extract the value for the key called "title"
@@ -207,7 +191,7 @@ public final class QueryUtils {
             // If an error is thrown when executing any of the above statements in the "try" block,
             // catch the exception here, so the app doesn't crash. Print a log message
             // with the message from the exception.
-            Log.e("QueryUtils", "Problem parsing the earthquake JSON results", e);
+            Log.e("QueryUtils", "Problem parsing the book JSON results", e);
         }
 
         // Return the list of books
