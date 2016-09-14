@@ -15,6 +15,7 @@
  */
 package com.example.android.booklisting;
 
+import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -37,8 +38,9 @@ import java.util.List;
  * Helper methods related to requesting and receiving book data from Google Books API.
  */
 public final class QueryUtils {
-
-    /** Tag for the log messages */
+    /**
+     * Tag for the log messages
+     */
     private static final String LOG_TAG = QueryUtils.class.getSimpleName();
 
     /**
@@ -188,7 +190,7 @@ public final class QueryUtils {
                 StringBuilder authorBuilder = new StringBuilder();
                 JSONArray authors = volumeInfo.getJSONArray("authors");
                 for (int j = 0; j < authors.length(); j++) {
-                    JSONObject author = authors.getJSONObject(j);
+                    String author = authors.getString(j);
                     authorBuilder.append(author);
                     authorBuilder.append(",");
                 }
