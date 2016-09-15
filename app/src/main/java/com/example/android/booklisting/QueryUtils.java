@@ -153,8 +153,11 @@ public final class QueryUtils {
             // Create a JSONObject from the JSON response string
             JSONObject baseJsonResponse = new JSONObject(bookJSON);
 
-            // Extract the JSONArray associated with the key called "features",
-            // which represents a list of features (or books).
+            // Extract the JSONArray associated with the key called "items",
+            // which represents a list of items.
+            if (!baseJsonResponse.has("items")) {
+                return null;
+            }
             JSONArray itemArray = baseJsonResponse.getJSONArray("items");
 
             // For each Book in the itemArray, create an {@link Book} object
@@ -169,14 +172,23 @@ public final class QueryUtils {
                 JSONObject volumeInfo = currentBook.getJSONObject("volumeInfo");
 
                 // Extract the value for the key called "title"
-                String title = volumeInfo.getString("title");
+                String title;
+                if (volumeInfo.has("title")) {
+                    title = volumeInfo.getString("title");
+                } else {
+                    title = "title is empty";
+                }
 
                 StringBuilder authorBuilder = new StringBuilder();
-                JSONArray authors = volumeInfo.getJSONArray("authors");
-                for (int j = 0; j < authors.length(); j++) {
-                    String author = authors.getString(j);
-                    authorBuilder.append(author);
-                    authorBuilder.append(",");
+                if (volumeInfo.has("authors")) {
+                    JSONArray authors = volumeInfo.getJSONArray("authors");
+                    for (int j = 0; j < authors.length(); j++) {
+                        String author = authors.getString(j);
+                        authorBuilder.append(author);
+                        authorBuilder.append(",");
+                    }
+                } else {
+                    authorBuilder.append("author is empty");
                 }
 
                 // Create a new {@link Book} object with the magnitude, location, time,

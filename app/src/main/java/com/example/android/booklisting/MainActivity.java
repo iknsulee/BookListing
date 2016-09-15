@@ -24,36 +24,18 @@ public class MainActivity extends AppCompatActivity {
         updateUi(new ArrayList<Book>());
     }
 
-//    private void setData(String query) {
-//        ListView bookListView = (ListView) findViewById(R.id.book_list);
-//
-//        ArrayList<Book> bookList = new ArrayList<>();
-//        if (!query.isEmpty()) {
-//            bookList.add(new Book(query + " author1", "title"));
-//            bookList.add(new Book(query + " author2", "title"));
-//            bookList.add(new Book(query + " author3", "title"));
-//            bookList.add(new Book(query + " author4", "title"));
-//            bookList.add(new Book(query + " author5", "title"));
-//            bookList.add(new Book(query + " author6", "title"));
-//        }
-//        BookAdapter bookAdapter = new BookAdapter(this, bookList);
-//
-//        bookListView.setAdapter(bookAdapter);
-//    }
-
     public void search(View view) {
         TextView keywordTextView = (TextView) findViewById(R.id.keyword);
         keyword = String.valueOf(keywordTextView.getText());
 
         BookAsyncTask bookAsyncTask = new BookAsyncTask();
         bookAsyncTask.execute();
-
-//        Toast.makeText(MainActivity.this, keyword, Toast.LENGTH_SHORT).show();
     }
 
     private void updateUi(List<Book> books) {
         ListView bookListView = (ListView) findViewById(R.id.book_list);
         BookAdapter bookAdapter = new BookAdapter(this, books);
+        bookListView.setEmptyView(findViewById(R.id.empty_list_view));
         bookListView.setAdapter(bookAdapter);
     }
 
@@ -68,10 +50,11 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(List<Book> books) {
             if (books == null) {
-                return;
-            }
+                updateUi(new ArrayList<Book>());
+            } else {
+                updateUi(books);
 
-            updateUi(books);
+            }
         }
 
     }
