@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
+        // When orientation is changed, search again.
         search(null);
     }
 
