@@ -1,11 +1,17 @@
 package com.example.android.booklisting;
 
+import android.content.Context;
+import android.content.res.Configuration;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -14,19 +20,26 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private static final String GOOGLE_BOOKS_API = "https://www.googleapis.com/books/v1/volumes";
-    private String keyword;
+    private String keyword = new String();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        updateUi(new ArrayList<Book>());
     }
 
     public void search(View view) {
         TextView keywordTextView = (TextView) findViewById(R.id.keyword);
         keyword = String.valueOf(keywordTextView.getText());
+
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+        if (!isConnected) {
+            Toast.makeText(MainActivity.this, "Network is not connedted", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         BookAsyncTask bookAsyncTask = new BookAsyncTask();
         bookAsyncTask.execute();
@@ -37,6 +50,13 @@ public class MainActivity extends AppCompatActivity {
         BookAdapter bookAdapter = new BookAdapter(this, books);
         bookListView.setEmptyView(findViewById(R.id.empty_list_view));
         bookListView.setAdapter(bookAdapter);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        search(null);
     }
 
     private class BookAsyncTask extends AsyncTask<URL, Void, List<Book>> {
